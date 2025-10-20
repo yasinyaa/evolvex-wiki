@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 
-import { ReduxProvider } from "@/components/providers/redux";
+import { CustomProvider } from "@/components/provider";
 import AppInit from "@/components/app-init";
 import "./globals.css";
 
@@ -31,10 +31,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReduxProvider>
+        <CustomProvider>
           {children}
           <AppInit />
-        </ReduxProvider>
+        </CustomProvider>
         <Toaster />
       </body>
     </html>
