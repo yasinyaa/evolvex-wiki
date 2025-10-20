@@ -24,6 +24,7 @@ model User {
   updatedAt     DateTime  @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
+  documents Document[]
 
   @@unique([email])
   @@map("user")
@@ -72,4 +73,39 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+}
+
+model Document {
+  id String @id
+  name String
+  content String
+
+  ownerId String
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  tags TagsOnDocuments[]
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+}
+
+model Tag {
+  id String @id
+  name String
+  documents TagsOnDocuments[]
+  createdAt  DateTime @default(now())
+}
+
+
+model TagsOnDocuments {
+  documentId String
+  document Document @relation(fields: [documentId], references: [id])
+  tagId String
+  tag Tag @relation(fields: [tagId], references: [id])
+
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([documentId, tagId])
 }
