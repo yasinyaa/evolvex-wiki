@@ -1,5 +1,5 @@
 "use client"
-
+import Link from "next/link"
 import { FileText } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -11,6 +11,8 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
+
+
 
 export default function Base() {
   return (
@@ -27,7 +29,9 @@ export default function Base() {
       </EmptyHeader>
       <EmptyContent>
         <div className="flex gap-2">
-          <Button>Create Document</Button>
+          <Button asChild>
+            <Link href='/base/documents/create'>Create Document</Link>
+            </Button>
         </div>
       </EmptyContent>
     </Empty>

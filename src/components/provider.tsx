@@ -1,7 +1,6 @@
 'use client'
-import { Provider } from "react-redux"
 
-import { store } from "@/store"
+import { StoreProvider} from "./store-provider"
 import { SidebarProvider } from "./ui/sidebar"
 
 type CustomProvider = {
@@ -9,9 +8,9 @@ type CustomProvider = {
 }
 
 export function CustomProvider ({ children }: CustomProvider) {
-    return (<Provider store={store}>
+    return (<StoreProvider>
         <SidebarProvider>
             {children}
         </SidebarProvider>
-    </Provider>)
+    </StoreProvider>)
 }
