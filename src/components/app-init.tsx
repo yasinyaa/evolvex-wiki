@@ -14,7 +14,10 @@ export default function AppInit() {
 
     useEffect(() => {
         if(session?.user) {
-            dispatch(setUser(session.user))
+            dispatch(setUser({
+                name: session.user.name,
+                email: session.user.email
+            }))
             dispatch(setIsAuthenticated(true))
         }
     }, [session, dispatch])

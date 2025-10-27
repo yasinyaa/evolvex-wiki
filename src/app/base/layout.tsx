@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/ui/nav/app-sidebar";
+import { Footer } from "@/components/ui/footer";
 
 export const metadata: Metadata = {
   title: "EvolveX | Base",
@@ -14,16 +15,16 @@ export default function BaseLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <>
         <AppSidebar />
         <SidebarInset>
-        <main className="min-w-full px-4 min-h-screen">
-            <SidebarTrigger className="-ml-1 mb-4" />
+        <div className="w-full h-full p-4">
             {children}
-        </main>
+            <Footer>
+            <SidebarTrigger className="-ml-1 my-3" />
+            </Footer>
+        </div>
         </SidebarInset>
-      </body>
-    </html>
+      </>
   );
 }

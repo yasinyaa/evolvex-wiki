@@ -1,6 +1,6 @@
 // EditableTitle.tsx
 import React from 'react';
-import { useFormContext, Controller } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 
 import { cn } from '@/lib/utils';
 import { Input } from './input';
@@ -24,7 +24,7 @@ const EditableTitle: React.FC<EditableTitleProps> = ({ name }) => {
             {...register(name)}
             autoComplete="off"
             placeholder="untitled document"
-            className={cn("text-lg font-bold placeholder-black uppercase bg-transparent outline-none w-full cursor-text shadow-none", error ? "border-1 border-red-900" : "border-none" )}
+            className={cn("text-lg font-bold placeholder-black bg-transparent ring-0 focus-visible:ring-1 outline-none w-full cursor-text shadow-none", error ? "border-1 border-red-900" : "border-none" )}
           />
       {error && (
         <p className='text-red-900 text-xs mt-2'>{error}</p>

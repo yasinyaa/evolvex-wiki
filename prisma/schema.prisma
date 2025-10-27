@@ -76,14 +76,15 @@ model Verification {
 }
 
 model Document {
-  id String @id
-  name String
+  id String @id @default(uuid())
+  name String @unique
   content String
 
   ownerId String
+  tagId String
 
   owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  tags TagsOnDocuments[]
+  tag Tag @relation(fields: [tagId], references: [id], onDelete: Cascade)
 
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
@@ -91,21 +92,8 @@ model Document {
 }
 
 model Tag {
-  id String @id
-  name String
-  documents TagsOnDocuments[]
+  id String @id @default(uuid())
+  name String @unique
+  documents Document[]
   createdAt  DateTime @default(now())
-}
-
-
-model TagsOnDocuments {
-  documentId String
-  document Document @relation(fields: [documentId], references: [id])
-  tagId String
-  tag Tag @relation(fields: [tagId], references: [id])
-
-  assignedAt DateTime @default(now())
-  assignedBy String
-
-  @@id([documentId, tagId])
 }

@@ -1,8 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { EditorContent, useEditor } from '@tiptap/react';
+import { EditorContent, toggleNode, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image'
+import FileHandler from '@tiptap/extension-file-handler'
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Toggle } from '@/components/ui/toggle';
@@ -20,6 +22,7 @@ import {
   Minus,
   Undo,
   Redo,
+  ImageIcon
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -50,6 +53,57 @@ function MinimalTiptap({
           keepAttributes: false,
         },
       }),
+      Image.configure({
+        inline: true
+      }),
+      FileHandler.configure({
+        allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp'],
+        onDrop: (currentEditor, files, pos) => {
+          files.forEach(file => {
+            const fileReader = new FileReader()
+
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+              currentEditor
+                .chain()
+                .insertContentAt(pos, {
+                  type: 'image',
+                  attrs: {
+                    src: fileReader.result,
+                  },
+                })
+                .focus()
+                .run()
+            }
+          })
+        },
+        onPaste: (currentEditor, files, htmlContent) => {
+          files.forEach(file => {
+            if (htmlContent) {
+              // if there is htmlContent, stop manual insertion & let other extensions handle insertion via inputRule
+              // you could extract the pasted file from this url string and upload it to a server for example
+              console.log(htmlContent) // eslint-disable-line no-console
+              return false
+            }
+
+            const fileReader = new FileReader()
+
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+              currentEditor
+                .chain()
+                .insertContentAt(currentEditor.state.selection.anchor, {
+                  type: 'image',
+                  attrs: {
+                    src: fileReader.result,
+                  },
+                })
+                .focus()
+                .run()
+            }
+          })
+        },
+      }),
     ],
     content,
     editable,
@@ -61,7 +115,7 @@ function MinimalTiptap({
       attributes: {
         class: cn(
           'prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl mx-auto focus:outline-none',
-          'min-h-[200px] p-4 border-0'
+          'min-h-screen p-4 border-0 focus-visible:border-1 focus-visible:rounded-lg'
         ),
       },
     },
@@ -72,8 +126,8 @@ function MinimalTiptap({
   }
 
   return (
-    <div className={cn('border rounded-lg overflow-hidden', className)}>
-      <div className="border-b p-2 flex flex-wrap items-center gap-1">
+    <div className={cn('border-0 overflow-hidden', className)}>
+      <div className="border-0 p-2 flex flex-wrap items-center gap-1">
         <Toggle
           size="sm"
           pressed={editor.isActive('bold')}
