@@ -1,7 +1,7 @@
 import { formatDistanceToNow } from "date-fns";
-import { Eye, Pencil, Trash } from "lucide-react";
 import type { DocumentType } from "@/types/documents";
 import { Badge } from "../badge";
+import { DocumentActions } from "./document-actions";
 
 type DocumentListItemProps = {
   document: DocumentType;
@@ -15,27 +15,23 @@ export function DocumentListItem({ document }: DocumentListItemProps) {
           <h1 className="text-lg font-bold">{document.name}</h1>
           <div className="flex items-center gap-2">
             <p className="font-thin text-xs">
-            <b>created:</b> {formatDistanceToNow(document.createdAt, { addSuffix: true })}
-          </p>
-          <p className="font-thin text-xs">
-            <b>updated:</b> {formatDistanceToNow(document.updatedAt, { addSuffix: true })}
-          </p>
+              <b>created:</b>{" "}
+              {formatDistanceToNow(document.createdAt, { addSuffix: true })}
+            </p>
+            <p className="font-thin text-xs">
+              <b>updated:</b>{" "}
+              {formatDistanceToNow(document.updatedAt, { addSuffix: true })}
+            </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
-          <Eye size={15} />
-          <Pencil size={15} />
-          <Trash size={15} className="text-red-800" />
-        </div>
+        <DocumentActions documentId={document.id} />
       </div>
       <div className="w-full">
         <span className="text-xs text-gray-500">{document.owner.name}</span>
       </div>
       <div className="w-full"></div>
       <div>
-        <Badge variant="default">
-          {document.tag?.name}
-        </Badge>
+        <Badge variant="default">{document.tag?.name}</Badge>
       </div>
     </div>
   );
