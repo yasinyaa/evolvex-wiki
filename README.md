@@ -3,7 +3,27 @@ Team wiki.
 
 ## Getting Started
 
-First, run the development server:
+### Install Deps
+
+```bash
+npm i
+```
+
+### Setup .env
+
+```bash
+cp .env.sample .env
+```
+
+change the values.
+
+### Prisma setup
+
+```bash
+npx primsa migrate
+```
+
+### Run the server
 
 ```bash
 npm run dev
