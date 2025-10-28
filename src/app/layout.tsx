@@ -4,6 +4,9 @@ import AppInit from "@/components/app-init";
 
 import { CustomProvider } from "@/components/provider";
 import { Toaster } from "@/components/ui/sonner";
+// TypeScript may not have a declaration for global CSS side-effect imports in some setups;
+// suppress the check here to avoid the "Cannot find module or type declarations" error.
+// @ts-expect-error
 import "./globals.css";
 
 const geist_mono = Geist_Mono({

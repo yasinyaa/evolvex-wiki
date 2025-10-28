@@ -1,16 +1,21 @@
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/ui/forms/login";
 import { RegisterForm } from "@/components/ui/forms/register";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { auth } from "@/lib/auth";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session) {
+    redirect("/base");
+  }
   return (
     <div className="font-sans w-full flex items-center justify-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <Tabs defaultValue="login" className="w-2/6">
+      <Tabs defaultValue="login" className="w-full lg:w-2/6">
         <TabsList className="w-full">
           <TabsTrigger value="login">Login</TabsTrigger>
           <TabsTrigger value="register">Register</TabsTrigger>

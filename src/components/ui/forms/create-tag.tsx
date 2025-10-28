@@ -36,8 +36,8 @@ export function CreateTagForm() {
   };
 
   return (
-    <div className="size-full flex flex-col items-start justify-start gap-6">
-      <Card className="w-2/5">
+    <div className="size-full flex flex-col items-center lg:items-start justify-center lg:justify-start gap-6">
+      <Card className="w-full lg:w-2/5">
         <CardContent>
           <form
             className="w-full flex flex-col gap-4"

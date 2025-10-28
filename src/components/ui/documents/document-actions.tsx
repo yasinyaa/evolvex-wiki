@@ -32,14 +32,14 @@ export function DocumentActions({
             variant="ghost"
             size="icon"
             onClick={() => {
-              deleteDocument(documentId)
+              deleteDocument(documentId).unwrap()
                 .then(() => {
                   toast.success("Document deleted successfully");
                   router.push("/base");
                 })
                 .catch((err) => {
                   toast.error(
-                    err.message ? err.message : "Failed to delete document",
+                    err.data.error ?? "Failed to delete document",
                   );
                 });
             }}

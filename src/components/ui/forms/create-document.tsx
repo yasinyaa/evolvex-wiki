@@ -46,11 +46,11 @@ export function CreateDocumentForm() {
           className="w-full flex flex-col gap-6"
           onSubmit={methods.handleSubmit(handleCreateDocument)}
         >
-          <div className="w-full flex justify-between items-center">
-            <div className="w-96">
+          <div className="w-full flex-col lg:flex gap-4 justify-start lg:justify-between items-center">
+            <div className="w-full lg:w-96 mb-4 lg:mb-0">
               <EditableTitle name="name" />
             </div>
-            <div className="w-96">
+            <div className="w-full lg:w-96">
               {isLoading ? (
                 <Spinner />
               ) : (
