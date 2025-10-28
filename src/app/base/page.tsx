@@ -17,7 +17,11 @@ import { Spinner } from "@/components/ui/spinner";
 import { useGetDocumentsQuery } from "@/store/services/documents-api";
 
 export default function Base() {
-  const { data: documents, error, isLoading } = useGetDocumentsQuery();
+  const { data: documents, error, isLoading } = useGetDocumentsQuery(undefined, {
+  refetchOnMountOrArgChange: true,
+  refetchOnReconnect: true,
+  refetchOnFocus: true,
+});
   const router = useRouter();
 
   if (isLoading) {

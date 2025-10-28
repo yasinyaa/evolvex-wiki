@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner";
+import AppInit from "@/components/app-init";
 
 import { CustomProvider } from "@/components/provider";
-import AppInit from "@/components/app-init";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const geist_mono = Geist_Mono({
@@ -11,10 +11,9 @@ const geist_mono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
 export const metadata: Metadata = {
   title: "EvolveX | Wiki",
-  description: "Evolvex dev team wiki",
+  description: "Evolvex dev team wiki.",
 };
 
 export default function RootLayout({
@@ -24,9 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geist_mono.className} antialiased`}
-      >
+      <body className={`${geist_mono.className} antialiased`}>
         <CustomProvider>
           {children}
           <AppInit />

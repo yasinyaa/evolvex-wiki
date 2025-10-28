@@ -1,29 +1,46 @@
-import { configureStore } from "@reduxjs/toolkit"
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  persistReducer,
+  REGISTER,
+  REHYDRATE,
+} from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-import authReducer from '@/store/slices/auth-slice'
-import { documentsApi } from "./services/documents-api"
-import { tagsApi } from "./services/tags-api"
+import authReducer from "@/store/slices/auth-slice";
+import { documentsApi } from "./services/documents-api";
+import { tagsApi } from "./services/tags-api";
 
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["documentsApi", "tagsApi"],
+};
 
-// export const store = configureStore({
-//     reducer: {
-//         auth: authReducer
-//     }
-// })
-// this is not recomended for nextjs apps
+const rootReducer = combineReducers({
+  auth: authReducer,
+  [documentsApi.reducerPath]: documentsApi.reducer,
+  [tagsApi.reducerPath]: tagsApi.reducer,
+});
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const makeStore = () => {
-    return configureStore({
-        reducer: {
-            auth: authReducer,
-            [documentsApi.reducerPath]: documentsApi.reducer,
-            [tagsApi.reducerPath]: tagsApi.reducer
+  return configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
         },
-        middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(documentsApi.middleware, tagsApi.middleware),
-    })
-}
+      }).concat(documentsApi.middleware, tagsApi.middleware),
+  });
+};
 
-export type AppStore = ReturnType<typeof makeStore>
+export type AppStore = ReturnType<typeof makeStore>;
 
-export type RootState = ReturnType<AppStore['getState']>
-export type AppDispatch = AppStore['dispatch']
+export type RootState = ReturnType<AppStore["getState"]>;
+export type AppDispatch = AppStore["dispatch"];

@@ -1,5 +1,4 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { useSelector } from "react-redux";
 
 import { baseQuery } from "@/lib/redux";
 import type { TagType } from "@/types/tags";
@@ -7,16 +6,21 @@ import type { TagType } from "@/types/tags";
 export const tagsApi = createApi({
   reducerPath: "tagsApi",
   baseQuery,
+  tagTypes: ["Tags"],
   endpoints: (builder) => ({
     getTags: builder.query<TagType[], void>({
       query: () => "/tags/all",
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Tags" as const, id })),
+              { type: "Tags", id: "LIST" },
+            ]
+          : [{ type: "Tags", id: "LIST" }],
     }),
-    getTagDocuments: builder.mutation<TagType, { id: string }>({
-      query: (data) => ({
-        url: "/tags/all",
-        method: "POST",
-        body: data,
-      }),
+    getTagDocuments: builder.query<TagType, string>({
+      query: (id: string) => `/tags/${id}`,
+      providesTags: (_result, _error, id) => [{ type: "Tags", id }],
     }),
     createTag: builder.mutation<TagType, Partial<TagType>>({
       query: (data) => ({
@@ -24,16 +28,13 @@ export const tagsApi = createApi({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: [{ type: "Tags", id: "LIST" }],
     }),
   }),
 });
 
-export function useTagsFromStore() {
-  return useSelector(tagsApi.endpoints.getTags.select());
-}
-
 export const {
   useGetTagsQuery,
-  useGetTagDocumentsMutation,
+  useGetTagDocumentsQuery,
   useCreateTagMutation,
 } = tagsApi;

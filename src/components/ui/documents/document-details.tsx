@@ -1,10 +1,10 @@
+/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: <until a good library for this is found> */
 "use client";
 
 import { formatDistanceToNow } from "date-fns";
 import DOMPurify from "dompurify";
 
-import { useGetDocumentFromStore } from "@/store/services/documents-api";
-import type { DocumentType } from "@/types/documents";
+import { useGetDocumentQuery } from "@/store/services/documents-api";
 import { Badge } from "../badge";
 import { Card, CardContent } from "../card";
 import { DocumentActions } from "./document-actions";
@@ -14,7 +14,7 @@ type DocumentDetailsProps = {
 };
 
 export function DocumentDetails({ id }: DocumentDetailsProps) {
-  const document: DocumentType = useGetDocumentFromStore(id);
+  const {data: document} = useGetDocumentQuery(id);
 
   if (!document) {
     return <div>Document not found</div>;
@@ -30,7 +30,7 @@ export function DocumentDetails({ id }: DocumentDetailsProps) {
                     <div className="w-full flex flex-col gap-4">
                         <div className="flex justify-between items-center">
                             <h1 className="text-lg font-bold">{document.name}</h1>
-                            <DocumentActions documentId={document.id} noView={true} />
+                            <DocumentActions documentId={document.id} viewOnly={false} />
                         </div>
                         <div className="flex items-center gap-2">
                             <p className="text-xs font-thin"><b>created by:</b> {document.owner.name}</p>

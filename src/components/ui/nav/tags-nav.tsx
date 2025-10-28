@@ -31,7 +31,7 @@ import { useGetTagsQuery } from "@/store/services/tags-api";
 
 export function TagNav() {
   const { data: tags, error, isLoading } = useGetTagsQuery();
-  const { isMobile } = useSidebar();
+  // const { isMobile } = useSidebar();
 
   if(isLoading) {
     return (

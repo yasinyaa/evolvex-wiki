@@ -15,11 +15,7 @@ import { LoadingSwap } from "../loading-swap";
 
 type TagFormType = z.infer<typeof tagSchema>;
 
-type CreateTagFormProps = {
-  isInline?: boolean;
-};
-
-export function CreateTagForm({ isInline= false }: CreateTagFormProps) {
+export function CreateTagForm() {
   const {
     handleSubmit,
     register,
@@ -27,22 +23,16 @@ export function CreateTagForm({ isInline= false }: CreateTagFormProps) {
   } = useForm<TagFormType>({
     resolver: zodResolver(tagSchema),
   });
-  const [createTag, { isSuccess, isError }] = useCreateTagMutation();
+  const [createTag] = useCreateTagMutation();
   const router = useRouter();
 
   const handleTagCreate = (data: TagFormType) => {
-    createTag(data);
-    console.log(isSuccess)
-
-
-    if (isError) {
-      toast.error("Failed to create tag.");
-    }
-
-    if (isSuccess) {
+    createTag(data).then(() => {
       toast.success("Successfully Created Tag");
-      if (!isInline) router.push("/base");
-    }
+      router.push("/base");
+    }).catch(() => {
+      toast.error("Failed to create tag.");
+    });
   };
 
   return (

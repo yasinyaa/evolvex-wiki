@@ -1,13 +1,12 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import type z from "zod";
-import { useCreateDocumentMutation } from "@/store/services/documents-api";
+import type * as z from "zod";
+import { useEditDocumentMutation } from "@/store/services/documents-api";
 import { useGetTagsQuery } from "@/store/services/tags-api";
 import { DocumentSchema } from "@/zod/document";
 import { Button } from "../button";
@@ -18,24 +17,30 @@ import { MinimalTiptap } from "../shadcn-io/minimal-tiptap";
 import { Spinner } from "../spinner";
 import { ToggleGroup, ToggleGroupItem } from "../toggle-group";
 
-type DocumentFormType = z.infer<typeof DocumentSchema>;
+type EditDocumentFormType = z.infer<typeof DocumentSchema>;
 
-export function CreateDocumentForm() {
-  const [content, setContent] = useState(`<h1>Start typing here.</h1>`);
-  const methods = useForm<DocumentFormType>({
+type EditDocumentFormProps = {
+  initialData: EditDocumentFormType;
+  id: string;
+};
+
+export function EditDocumentForm({ initialData, id }: EditDocumentFormProps) {
+  const methods = useForm<EditDocumentFormType>({
     resolver: zodResolver(DocumentSchema),
+    defaultValues: initialData,
   });
-  const [createDocument] = useCreateDocumentMutation();
+  const [content, setContent] = useState(initialData.content);
   const router = useRouter();
   const { data: tags, isLoading } = useGetTagsQuery();
-  const selectedTag = methods.watch("tagId");
+  const selectedTag = methods.watch("tagId", initialData.tagId);
+  const [editDocument] = useEditDocumentMutation();
 
-  const handleCreateDocument = (data: DocumentFormType) => {
-    createDocument({...data, content}).then(() => {
-      toast.success("Successfully Created Document");
-      router.push("/base");
+  const handleEditDocument = (data: EditDocumentFormType) => {
+    editDocument({id, data:{...data, content }}).then(() => {
+        toast.success("Successfully Edited Document");
+        router.push(`/base/documents/view/${id}`);
     }).catch(() => {
-      toast.error("Failed to create document.");
+        toast.error("Failed to edit document.");
     });
   };
 
@@ -44,7 +49,7 @@ export function CreateDocumentForm() {
       <FormProvider {...methods}>
         <form
           className="w-full flex flex-col gap-6"
-          onSubmit={methods.handleSubmit(handleCreateDocument)}
+          onSubmit={methods.handleSubmit(handleEditDocument)}
         >
           <div className="w-full flex justify-between items-center">
             <div className="w-96">
