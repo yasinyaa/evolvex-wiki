@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-
-import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/ui/nav/app-sidebar";
 import { Footer } from "@/components/ui/footer";
+import { AppSidebar } from "@/components/ui/nav/app-sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export const metadata: Metadata = {
   title: "EvolveX | Base",
@@ -16,15 +15,13 @@ export default function BaseLayout({
 }>) {
   return (
     <>
-        <AppSidebar />
-        <SidebarInset>
-        <div className="w-full h-full p-4">
-            {children}
-            <Footer>
-            <SidebarTrigger className="-ml-1 my-3" />
-            </Footer>
-        </div>
-        </SidebarInset>
-      </>
+      <AppSidebar className="z-10" />
+      <div className="w-full overflow-hidden p-4 z-0">
+        {children}
+        <Footer>
+          <SidebarTrigger className="-ml-1 my-3" />
+        </Footer>
+      </div>
+    </>
   );
 }

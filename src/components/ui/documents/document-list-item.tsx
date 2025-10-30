@@ -9,25 +9,31 @@ type DocumentListItemProps = {
 
 export function DocumentListItem({ document }: DocumentListItemProps) {
   return (
-    <div className="w-full flex flex-col p-4 gap-2 border-1 rounded-lg">
-      <div className="w-full flex justify-start gap-20 items-center">
-        <div className="w-full flex-col lg:flex gap-20 items-center">
-          <h1 className="text-lg font-bold">{document.name}</h1>
-          <div className="flex items-center gap-2">
-            <p className="font-thin text-xs">
-              <b>created:</b>{" "}
-              {formatDistanceToNow(document.createdAt, { addSuffix: true })}
-            </p>
-            <p className="font-thin text-xs">
-              <b>updated:</b>{" "}
-              {formatDistanceToNow(document.updatedAt, { addSuffix: true })}
-            </p>
+    <div className="w-full flex flex-col p-4 gap-4 border-1 rounded-lg">
+      <div className="w-full flex justify-start items-center">
+        <div className="w-full flex-col lg:flex lg:gap-4 items-start">
+          <div className="w-full flex mb-2 justify-between">
+            <h1 className="text-lg font-bold">{document.name}</h1>
+            <DocumentActions documentId={document.id} />
+          </div>
+          <div className="w-full flex items-start justify-between gap-2">
+            <div className="w-2/3 flex-col gap-2">
+              <div className="w-full flex gap-2 justify-center items-start">
+                <p className="font-thin text-xs">
+                  <b>created:</b>{" "}
+                  {formatDistanceToNow(document.createdAt, { addSuffix: true })}
+                </p>
+                <p className="font-thin text-xs">
+                  <b>updated:</b>{" "}
+                  {formatDistanceToNow(document.updatedAt, { addSuffix: true })}
+                </p>
+              </div>
+              <div className="w-full">
+                <span className="text-xs font-thin"><b>created by:</b> {document.owner.name}</span>
+              </div>
+            </div>
           </div>
         </div>
-        <DocumentActions documentId={document.id} />
-      </div>
-      <div className="w-full">
-        <span className="text-xs text-gray-500">created by: {document.owner.name}</span>
       </div>
       <div className="w-full"></div>
       <div>

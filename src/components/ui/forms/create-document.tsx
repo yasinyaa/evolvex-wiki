@@ -7,6 +7,7 @@ import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
+import { PlateEditor } from "@/components/editor/plate-editor";
 import { useCreateDocumentMutation } from "@/store/services/documents-api";
 import { useGetTagsQuery } from "@/store/services/tags-api";
 import { DocumentSchema } from "@/zod/document";
@@ -31,23 +32,24 @@ export function CreateDocumentForm() {
   const selectedTag = methods.watch("tagId");
 
   const handleCreateDocument = (data: DocumentFormType) => {
-    createDocument({...data, content}).then(() => {
-      toast.success("Successfully Created Document");
-      router.push("/base");
-    }).catch(() => {
-      toast.error("Failed to create document.");
-    });
+    createDocument({ ...data, content })
+      .then(() => {
+        toast.success("Successfully Created Document");
+        router.push("/base");
+      })
+      .catch(() => {
+        toast.error("Failed to create document.");
+      });
   };
 
   return (
-    <div className="size-full flex flex-col items-start justify-start gap-6">
-      <FormProvider {...methods}>
+    <FormProvider {...methods}>
         <form
-          className="w-full flex flex-col gap-6"
+          className="flex flex-col gap-6"
           onSubmit={methods.handleSubmit(handleCreateDocument)}
         >
-          <div className="w-full flex-col lg:flex gap-4 justify-start lg:justify-between items-center">
-            <div className="w-full lg:w-96 mb-4 lg:mb-0">
+          <div className="w-full flex flex-col lg:flex-row gap-2 lg:gap-4 justify-start lg:justify-between items-start">
+            <div className="w-full lg:w-96 lg:mb-0">
               <EditableTitle name="name" />
             </div>
             <div className="w-full lg:w-96">
@@ -87,13 +89,14 @@ export function CreateDocumentForm() {
               </LoadingSwap>
             </Button>
           </div>
-          <div className="w-full">
-            <MinimalTiptap
+          <div>
+            {/* <MinimalTiptap
               content={content}
               onChange={setContent}
               placeholder="Start typing your content here..."
               className="min-h-[400px]"
-            />
+            /> */}
+            <PlateEditor />
             <Input
               {...methods.register("content")}
               value={content}
@@ -105,6 +108,5 @@ export function CreateDocumentForm() {
           </div>
         </form>
       </FormProvider>
-    </div>
   );
 }
