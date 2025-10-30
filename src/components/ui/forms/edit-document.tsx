@@ -2,18 +2,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type * as z from "zod";
+import { PlateEditor } from "@/components/editor/plate-editor";
 import { useEditDocumentMutation } from "@/store/services/documents-api";
 import { useGetTagsQuery } from "@/store/services/tags-api";
-import { DocumentSchema } from "@/zod/document";
+import type { DocumentSchema } from "@/zod/document";
 import { Button } from "../button";
 import EditableTitle from "../editable-title";
-import { Input } from "../input";
 import { LoadingSwap } from "../loading-swap";
-import { MinimalTiptap } from "../shadcn-io/minimal-tiptap";
 import { Spinner } from "../spinner";
 import { ToggleGroup, ToggleGroupItem } from "../toggle-group";
 
@@ -26,32 +24,35 @@ type EditDocumentFormProps = {
 
 export function EditDocumentForm({ initialData, id }: EditDocumentFormProps) {
   const methods = useForm<EditDocumentFormType>({
-    resolver: zodResolver(DocumentSchema),
+    // resolver: zodResolver(DocumentSchema),
     defaultValues: initialData,
   });
-  const [content, setContent] = useState(initialData.content);
   const router = useRouter();
   const { data: tags, isLoading } = useGetTagsQuery();
   const selectedTag = methods.watch("tagId", initialData.tagId);
   const [editDocument] = useEditDocumentMutation();
 
+  methods.register("content");
+
   const handleEditDocument = (data: EditDocumentFormType) => {
-    editDocument({id, data:{...data, content }}).then(() => {
+    editDocument({ id, data })
+      .then(() => {
         toast.success("Successfully Edited Document");
         router.push(`/base/documents/view/${id}`);
-    }).catch(() => {
+      })
+      .catch(() => {
         toast.error("Failed to edit document.");
-    });
+      });
   };
 
   return (
-    <div className="size-full flex flex-col items-start justify-start gap-6">
+    <div className="size-full h-screen flex flex-col items-start justify-start gap-6">
       <FormProvider {...methods}>
         <form
-          className="w-full flex flex-col gap-6"
+          className="w-full h-full flex flex-col gap-6"
           onSubmit={methods.handleSubmit(handleEditDocument)}
         >
-          <div className="w-full flex-col lg:flex gap-4 justify-start lg:justify-between items-center">
+          <div className="w-full flex flex-col lg:flex-row gap-2 lg:gap-4 justify-start lg:justify-between items-start">
             <div className="w-full lg:w-96 mb-4 lg:mb-0">
               <EditableTitle name="name" />
             </div>
@@ -92,21 +93,17 @@ export function EditDocumentForm({ initialData, id }: EditDocumentFormProps) {
               </LoadingSwap>
             </Button>
           </div>
-          <div className="w-full">
-            <MinimalTiptap
-              content={content}
-              onChange={setContent}
-              placeholder="Start typing your content here..."
-              className="min-h-[400px]"
-            />
-            <Input
-              {...methods.register("content")}
-              value={content}
-              className="hidden"
-            />
+          <div className="w-full h-full">
             <p className="text-red-900 text-sm mt-2">
               {methods.formState.errors.content?.message}
             </p>
+            <PlateEditor
+              value={initialData.content as unknown as string}
+              onChange={({_, value}) => {
+                console.log(value)
+                methods.setValue("content", value)
+              }}
+            />
           </div>
         </form>
       </FormProvider>

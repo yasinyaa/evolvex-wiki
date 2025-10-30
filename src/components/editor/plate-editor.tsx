@@ -8,16 +8,20 @@ import { EditorKit } from "@/components/editor/editor-kit";
 import { SettingsDialog } from "@/components/editor/settings-dialog";
 import { Editor, EditorContainer } from "@/components/ui/editor";
 
-export function PlateEditor() {
+export function PlateEditor({ onChange, value }: { value?: string, onChange?: (value: string) => void }) {
   const editor = usePlateEditor({
     plugins: EditorKit,
-    value,
+    value: value ?? [],
   });
 
+  const handleChange = (value) => {
+    onChange(value);
+  };
+
   return (
-    <Plate editor={editor}>
+    <Plate editor={editor} onChange={handleChange}>
       <EditorContainer>
-        <Editor variant="fullWidth" />
+        <Editor variant="fullWidth" placeholder="Start typing here..." />
       </EditorContainer>
 
       <SettingsDialog />

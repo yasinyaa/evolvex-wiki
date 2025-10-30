@@ -16,7 +16,7 @@ export default function BaseLayout({
   return (
     <>
       <AppSidebar className="z-10" />
-      <div className="w-full overflow-hidden p-4 z-0">
+      <div className="w-full overflow-hidden h-full flex flex-col gap-4 p-4 z-0">
         {children}
         <Footer>
           <SidebarTrigger className="-ml-1 my-3" />

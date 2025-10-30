@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import type z from "zod";
@@ -13,16 +12,13 @@ import { useGetTagsQuery } from "@/store/services/tags-api";
 import { DocumentSchema } from "@/zod/document";
 import { Button } from "../button";
 import EditableTitle from "../editable-title";
-import { Input } from "../input";
 import { LoadingSwap } from "../loading-swap";
-import { MinimalTiptap } from "../shadcn-io/minimal-tiptap";
 import { Spinner } from "../spinner";
 import { ToggleGroup, ToggleGroupItem } from "../toggle-group";
 
 type DocumentFormType = z.infer<typeof DocumentSchema>;
 
 export function CreateDocumentForm() {
-  const [content, setContent] = useState(`<h1>Start typing here.</h1>`);
   const methods = useForm<DocumentFormType>({
     resolver: zodResolver(DocumentSchema),
   });
@@ -31,8 +27,11 @@ export function CreateDocumentForm() {
   const { data: tags, isLoading } = useGetTagsQuery();
   const selectedTag = methods.watch("tagId");
 
+  // register the content field
+  methods.register("content");
+
   const handleCreateDocument = (data: DocumentFormType) => {
-    createDocument({ ...data, content })
+    createDocument(data)
       .then(() => {
         toast.success("Successfully Created Document");
         router.push("/base");
@@ -45,7 +44,7 @@ export function CreateDocumentForm() {
   return (
     <FormProvider {...methods}>
         <form
-          className="flex flex-col gap-6"
+          className="flex h-screen flex-col gap-6"
           onSubmit={methods.handleSubmit(handleCreateDocument)}
         >
           <div className="w-full flex flex-col lg:flex-row gap-2 lg:gap-4 justify-start lg:justify-between items-start">
@@ -90,21 +89,13 @@ export function CreateDocumentForm() {
             </Button>
           </div>
           <div>
-            {/* <MinimalTiptap
-              content={content}
-              onChange={setContent}
-              placeholder="Start typing your content here..."
-              className="min-h-[400px]"
-            /> */}
-            <PlateEditor />
-            <Input
-              {...methods.register("content")}
-              value={content}
-              className="hidden"
-            />
             <p className="text-red-900 text-sm mt-2">
               {methods.formState.errors.content?.message}
             </p>
+            <PlateEditor onChange={({ value }: any) => {
+              console.log("Content changed:", value);
+              methods.setValue("content", value);
+            }} />
           </div>
         </form>
       </FormProvider>

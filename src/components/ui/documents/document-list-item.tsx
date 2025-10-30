@@ -18,7 +18,7 @@ export function DocumentListItem({ document }: DocumentListItemProps) {
           </div>
           <div className="w-full flex items-start justify-between gap-2">
             <div className="w-2/3 flex-col gap-2">
-              <div className="w-full flex gap-2 justify-center items-start">
+              <div className="w-full flex gap-2 justify-start items-start">
                 <p className="font-thin text-xs">
                   <b>created:</b>{" "}
                   {formatDistanceToNow(document.createdAt, { addSuffix: true })}
