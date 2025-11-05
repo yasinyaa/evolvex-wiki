@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { icons } from "@/constants";
-import { useCreateTagMutation } from "@/store/services/tags-api";
+import { useEditTagMutation } from "@/store/services/tags-api";
 import { tagSchema } from "@/zod/tag";
 import { Button } from "../button";
 import { Card, CardContent } from "../card";
@@ -24,7 +24,12 @@ import { LoadingSwap } from "../loading-swap";
 
 type TagFormType = z.infer<typeof tagSchema>;
 
-export function CreateTagForm() {
+type EditTagFormProps = {
+    initialData?: TagFormType;
+    id: string;
+};
+
+export function EditTagForm({ initialData, id }: EditTagFormProps) {
   const {
     handleSubmit,
     register,
@@ -32,19 +37,23 @@ export function CreateTagForm() {
     formState: { isSubmitting, errors },
   } = useForm<TagFormType>({
     resolver: zodResolver(tagSchema),
+    defaultValues: initialData || {
+      name: "",
+      icon: "",
+    },
   });
-  const [createTag] = useCreateTagMutation();
+  const [editTag] = useEditTagMutation();
   const router = useRouter();
 
   const handleTagCreate = (data: TagFormType) => {
-    createTag(data)
+    editTag({data, id})
       .unwrap()
       .then(() => {
-        toast.success("Successfully Created Tag");
+        toast.success("Successfully Edited Tag");
         router.push("/base");
       })
       .catch(() => {
-        toast.error("Failed to create tag.");
+        toast.error("Failed to edit tag.");
       });
   };
 
@@ -59,6 +68,7 @@ export function CreateTagForm() {
             <div className="w-full flex flex-col gap-4 justify-start items-start">
               <Label>Tag Icon</Label>
               <Select
+                defaultValue={initialData?.icon || ""}
                 onValueChange={(value) => {
                   setValue("icon", value);
                   setValue("name", value);

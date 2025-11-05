@@ -1,6 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 
 import { baseQuery } from "@/lib/redux";
+import type { ExtendedTagApiParams } from "@/types/redux";
 import type { TagType } from "@/types/tags";
 
 export const tagsApi = createApi({
@@ -30,6 +31,17 @@ export const tagsApi = createApi({
       }),
       invalidatesTags: [{ type: "Tags", id: "LIST" }],
     }),
+    editTag: builder.mutation<TagType, ExtendedTagApiParams>({
+      query: ({ id, data }) => ({
+        url: `tags/${id}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Tags", id },
+        { type: "Tags", id: "LIST" },
+      ],
+    }),
   }),
 });
 
@@ -37,4 +49,5 @@ export const {
   useGetTagsQuery,
   useGetTagDocumentsQuery,
   useCreateTagMutation,
+  useEditTagMutation,
 } = tagsApi;

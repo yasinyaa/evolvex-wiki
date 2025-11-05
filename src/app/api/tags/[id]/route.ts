@@ -32,3 +32,37 @@ export async function GET(_request: NextRequest, ctx: RouteContext<'/api/tags/[i
 
   return NextResponse.json(tag, { status: 200 });
 }
+
+export async function PUT(request: NextRequest, ctx: RouteContext<'/api/tags/[id]'>): Promise<NextResponse> {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  const body = await request.json();
+  const { id } = await ctx.params;
+
+  if (!session) {
+    return NextResponse.json(
+      { error: "you are not authenticated" },
+      { status: 401 },
+    );
+  }
+
+  if (!body) {
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 400 },
+    );
+  }
+
+  const updatedTag = await prisma.tag.update({
+    where: {
+      id: id,
+    },
+    data: {
+        name: body.name,
+        icon: body.icon,
+    }
+  });
+
+  return NextResponse.json(updatedTag, { status: 200 });
+}

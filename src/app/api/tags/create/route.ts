@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
   const createdTag = await prisma.tag.create({
     data: {
       name: body.name as string,
+      icon: body.icon as string,
     },
   });
 

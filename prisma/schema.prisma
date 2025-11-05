@@ -94,6 +94,7 @@ model Document {
 model Tag {
   id String @id @default(uuid())
   name String @unique
+  icon String?
   documents Document[]
   createdAt  DateTime @default(now())
 }

@@ -17,11 +17,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <PersistGate
-      loading={<PageLoading />}
-      persistor={persistStore(storeRef.current)}
-    >
+    // <PersistGate
+    //   loading={<PageLoading />}
+    //   persistor={persistStore(storeRef.current)}
+    // >
+    // </PersistGate>
       <Provider store={storeRef.current}>{children}</Provider>
-    </PersistGate>
   );
 }
